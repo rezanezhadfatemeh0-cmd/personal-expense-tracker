@@ -1,36 +1,63 @@
-# Personal Expense Tracker 💰
+# expense_tracker.py
+import datetime
 
-A comprehensive command-line application for tracking personal income and expenses with advanced budgeting and reporting features.
+class ExpenseTracker:
+    def __init__(self):
+        self.expenses = []
 
-## 🎯 Features
+    def add_expense(self, amount, category, date=None):
+        if date is None:
+            date = datetime.date.today()
+        else:
+            date = datetime.datetime.strptime(date, '%Y-%m-%d').date()
+        expense = {
+            'amount': amount,
+            'category': category,
+            'date': date
+        }
+        self.expenses.append(expense)
+        print(f"Expense added: {expense}")
 
-### Core Functionality
-- ✅ **Track Income & Expenses** - Add transactions with detailed information
-- 📊 **Monthly Reports** - Generate comprehensive financial reports
-- 🎯 **Budget Management** - Set and monitor category-wise budgets
-- 🔍 **Advanced Filtering** - Filter by date, category, type, and more
-- 💳 **Payment Methods** - Track different payment methods
-- 📈 **Savings Analytics** - Calculate savings rate and financial insights
+    def view_expenses(self):
+        if not self.expenses:
+            print("No expenses recorded.")
+            return
+        print("Date         | Category       | Amount")
+        print("---------------------------------------")
+        for e in self.expenses:
+            print(f"{e['date']} | {e['category']:13} | {e['amount']:7}")
+        total = sum(e['amount'] for e in self.expenses)
+        print("---------------------------------------")
+        print(f"Total expenses: {total}")
 
-### Categories Supported
-- 🍕 Food & Dining
-- 🚗 Transportation  
-- 🛍️ Shopping
-- 🎬 Entertainment
-- 📄 Bills & Utilities
-- 🏥 Health & Medical
-- 📚 Education
-- ✈️ Travel
-- 📦 Other
+    def clear_expenses(self):
+        self.expenses = []
+        print("All expenses cleared.")
 
-## 🚀 Installation
+def main():
+    tracker = ExpenseTracker()
+    while True:
+        print("\nOptions: add | view | clear | quit")
+        choice = input("Choose an option: ").strip().lower()
 
-### Prerequisites
-- Python 3.7 or higher
-- No additional packages required (uses only standard library)
+        if choice == 'add':
+            try:
+                amount = float(input("Enter amount: "))
+                category = input("Enter category: ")
+                date = input("Enter date (YYYY-MM-DD) or leave empty for today: ").strip()
+                date = date if date else None
+                tracker.add_expense(amount, category, date)
+            except ValueError:
+                print("Invalid input. Please try again.")
+        elif choice == 'view':
+            tracker.view_expenses()
+        elif choice == 'clear':
+            tracker.clear_expenses()
+        elif choice == 'quit':
+            print("Exiting program.")
+            break
+        else:
+            print("Invalid option. Try again.")
 
-### Setup
-1. Clone the repository:
-```bash
-git clone https://github.com/YOUR_USERNAME/personal-expense-tracker.git
-cd personal-expense-tracker
+if __name__ == "__main__":
+    main()
